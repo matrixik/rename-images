@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gosimple/hashdir"
 	"github.com/otiai10/copy"
 )
 
@@ -25,6 +26,7 @@ func Test_imagesInFolder(t *testing.T) {
 			args{folder: "assets"},
 			[]string{
 				// "assets/CRW_1446.CRW",
+				"assets/20200606/DSC_02188.JPEG",
 				"assets/_DSC3262.ARW",
 				"assets/_DSC3262.JPG",
 				"assets/test1/DSC_0976.NEF",
@@ -122,16 +124,18 @@ func Test_proposeRename(t *testing.T) {
 				// "assets/CRW_1446.CRW",
 				"assets/_DSC3262.ARW",
 				"assets/_DSC3262.JPG",
+				"assets/20200606/DSC_02188.JPEG",
 				"assets/test1/DSC_0976.NEF",
 				"assets/test1/IMG_9526.CR2",
 			}},
 			map[string]string{
 				// "assets/CRW_1446.CRW":           "2018-01/01/20180101_1446.crw",
-				"assets/_DSC3262.ARW":           "2020-06/13/20200613_3262.arw",
-				"assets/_DSC3262.JPG":           "2020-06/13/20200613_3262.jpg",
-				"assets/test1/DSC_0976.NEF":     "2019-06/29/20190629_0976.nef",
-				"assets/test1/DSC_0976.NEF.xmp": "2019-06/29/20190629_0976.nef.xmp",
-				"assets/test1/IMG_9526.CR2":     "2019-05/29/20190529_9526.cr2",
+				"assets/_DSC3262.ARW":            "2020/2020-06-13/20200613-174629_3262.arw",
+				"assets/_DSC3262.JPG":            "2020/2020-06-13/20200613-174629_3262.jpg",
+				"assets/20200606/DSC_02188.JPEG": "2020/2020-06-06/20200606-080244_02188.jpg",
+				"assets/test1/DSC_0976.NEF":      "2019/2019-06-29/20190629-031123_0976.nef",
+				"assets/test1/DSC_0976.NEF.xmp":  "2019/2019-06-29/20190629-031123_0976.nef.xmp",
+				"assets/test1/IMG_9526.CR2":      "2019/2019-05-29/20190529-123211_9526.cr2",
 			},
 			false,
 		},
@@ -179,11 +183,11 @@ func Test_moveFiles(t *testing.T) {
 			"Test moving files",
 			args{filesMap: map[string]string{
 				// "CRW_1446.CRW":           "2018-01/01/20180101_1446.crw",
-				"_DSC3262.ARW":           "2020-06/13/20200613_3262.arw",
-				"_DSC3262.JPG":           "2020-06/13/20200613_3262.jpg",
-				"test1/DSC_0976.NEF":     "2019-06/29/20190629_0976.nef",
-				"test1/DSC_0976.NEF.xmp": "2019-06/29/20190629_0976.nef.xmp",
-				"test1/IMG_9526.CR2":     "2019-05/29/20190529_9526.cr2",
+				"_DSC3262.ARW":           "2020/2020-06-13/20200613-174629_3262.arw",
+				"_DSC3262.JPG":           "2020/2020-06-13/20200613-174629_3262.jpg",
+				"test1/DSC_0976.NEF":     "2019/2019-06-29/20190629-031123_0976.nef",
+				"test1/DSC_0976.NEF.xmp": "2019/2019-06-29/20190629-031123_0976.nef.xmp",
+				"test1/IMG_9526.CR2":     "2019/2019-05-29/20190529-123211_9526.cr2",
 			}},
 			false,
 		},
@@ -192,6 +196,58 @@ func Test_moveFiles(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := moveFiles(tt.args.filesMap); (err != nil) != tt.wantErr {
 				t.Errorf("moveFiles() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func Test_processImages(t *testing.T) {
+	currentDir, _ := os.Getwd()
+	defer os.Chdir(currentDir)
+
+	dir, err := ioutil.TempDir("", "assets")
+	if err != nil {
+		t.Errorf("Creating temp dir error: %v", err)
+	}
+	defer os.RemoveAll(dir) // clean up
+
+	err = copy.Copy("assets/", dir)
+	if err != nil {
+		t.Errorf("Copy dir error: %v", err)
+	}
+
+	_ = os.Chdir(dir)
+
+	type args struct {
+		path string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			"Test whole images processing",
+			args{path: dir},
+			"9d09fe5677b4be3e1d5c56ed4ffac1dc900ad5f050d43ae8831fee673e8f21d0",
+			false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := processImages(tt.args.path); (err != nil) != tt.wantErr {
+				t.Errorf("processImages() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			hash, err := hashdir.Make("./", "sha256")
+			if (err != nil) != tt.wantErr {
+				t.Errorf("hashdir.Create() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !reflect.DeepEqual(hash, tt.want) {
+				t.Errorf("proposeRename() = %v, want %v", hash, tt.want)
 			}
 		})
 	}
