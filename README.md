@@ -31,7 +31,7 @@ properly (if you synchronize time on all cameras).
 Next you can change subfolders names to contain more useful info like
 `2020-03-08_Alice_portrait`. Avoid spaces in names.
 
-You need to remove old and empty folders by hand (it leave then just in case).
+You need to remove old and empty folders by hand (it leave them just in case).
 
 Warning: if destination file with same name already exists it will
 be overwritten.
