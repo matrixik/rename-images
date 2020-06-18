@@ -6,10 +6,10 @@ package main
 import (
 	"io/ioutil"
 	"os"
-	"reflect"
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/gosimple/hashdir"
 	"github.com/otiai10/copy"
 )
@@ -49,7 +49,7 @@ func Test_imagesInFolder(t *testing.T) {
 				t.Errorf("imagesInFolder() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotFiles, tt.wantFiles) {
+			if !cmp.Equal(gotFiles, tt.wantFiles) {
 				t.Errorf("imagesInFolder() = %v, want %v", gotFiles, tt.wantFiles)
 			}
 		})
@@ -104,7 +104,7 @@ func Test_imageCreationDate(t *testing.T) {
 				t.Errorf("imageCreationDate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !cmp.Equal(got, tt.want) {
 				t.Errorf("imageCreationDate() = %v, want %v", got, tt.want)
 			}
 		})
@@ -150,7 +150,7 @@ func Test_proposeRename(t *testing.T) {
 				t.Errorf("proposeRename() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !cmp.Equal(got, tt.want) {
 				t.Errorf("proposeRename() = %v, want %v", got, tt.want)
 			}
 		})
@@ -249,7 +249,7 @@ func Test_processImages(t *testing.T) {
 				return
 			}
 
-			if !reflect.DeepEqual(hash, tt.want) {
+			if !cmp.Equal(hash, tt.want) {
 				t.Errorf("proposeRename() = %v, want %v", hash, tt.want)
 			}
 		})
