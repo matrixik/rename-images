@@ -10,9 +10,15 @@ ENV \
     GOARCH=amd64
 
 WORKDIR /go/src/app
+
+# Cache dependencies
+COPY go.mod go.sum ./
+RUN \
+    go mod download && \
+    go mod verify
+
 COPY . .
-RUN go get -d -t -v ./...
-RUN go mod verify
+
 # Run tests so we don't build app with failing tests
 RUN go test ./...
 
