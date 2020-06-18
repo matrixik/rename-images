@@ -53,9 +53,8 @@ func main() {
 
 	err := processImages("./")
 	if err != nil {
-		fmt.Printf("Error: %v", err)
+		fmt.Printf("Error: %v\n", err)
 	}
-	fmt.Println("Success")
 }
 
 func processImages(path string) error {
