@@ -124,11 +124,15 @@ func cleanName(filename string) string {
 }
 
 func imageCreationDate(path string) (time.Time, error) {
-	f, err := os.Open(path)
+	f, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return time.Date(2020, time.June, 01, 0, 0, 0, 0, time.UTC), err
 	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); closeErr != nil {
+			err = closeErr
+		}
+	}()
 
 	eh, err := exiftool.SearchExifHeader(f)
 	if err != nil {
@@ -193,11 +197,15 @@ func ensureDir(folder string) error {
 func isEmpty(dir string) bool {
 	// Source: https://stackoverflow.com/a/30708914/1722542
 
-	f, err := os.Open(dir)
+	f, err := os.Open(filepath.Clean(dir))
 	if err != nil {
 		return false
 	}
-	defer f.Close()
+	defer func() {
+		if ferr := f.Close(); ferr != nil {
+			err = ferr
+		}
+	}()
 
 	_, err = f.Readdirnames(1) // Or f.Readdir(1)
 	return err == io.EOF
