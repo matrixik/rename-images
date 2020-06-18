@@ -33,6 +33,7 @@ RUN \
         -X main.buildTime=${BUILDTIME}" \
         -o app
 
+# Second build step
 FROM gcr.io/distroless/base-debian10
 
 LABEL \
