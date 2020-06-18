@@ -78,6 +78,10 @@ func imagesInFolder(root string) (files []string, err error) {
 	}
 	err = filepath.Walk(root,
 		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
 			// Select only files that need to have changed name
 			if !info.IsDir() &&
 				isSupportedFile(path) &&
