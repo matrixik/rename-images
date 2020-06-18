@@ -19,9 +19,6 @@ builds:
       - -X main.commit={{ .ShortCommit }}
       - -X main.buildTime={{ .Date }}
 
-release:
-  draft: true
-
 archives:
   - format: binary
     format_overrides:
