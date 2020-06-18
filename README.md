@@ -9,7 +9,7 @@ touch). Then extract `EXIF` creation date and time and use it for new name.
 Input folder structure does not matter. All supported files will be moved
 to new place.
 
-`some_folder/placeA/_DSC7890.arw => 2020/2020-06-18/20200618-121314_7890.arw`
+`some_folder/placeA/_DSC7890.arw` => `2020/2020-06-18/20200618-121314_7890.arw`
 
 Sidecar files like `jpg`, `jpeg` or `xmp` also will be sorted (`xmp` will use
 picture creation date and time).
@@ -38,7 +38,7 @@ This way even if you shoot with multiple cameras all pictures will be sorted
 properly (if you synchronize time on all cameras).
 
 Next you can change subfolders names to contain more useful info like
-`2020-03-08_Alice_portrait`. This way if you want to move/copy this folder
+`2020-03-08_Alice_portrait`. This way if you want to copy/move this folder
 somewhere else it will always have unique name. Avoid spaces in names.
 
 You need to remove old and empty folders by hand (it leave them just in case).
