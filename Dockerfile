@@ -27,13 +27,23 @@ RUN \
     COMMIT=$(git rev-parse --short HEAD) && \
     BUILDTIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ") && \
     go build -ldflags="-s -w \
-        -X main.buildType=df:${DOCKER_TAG:-} \
-        -X main.version=$VERSION \
-        -X main.commit=$COMMIT \
-        -X main.buildTime=$BUILDTIME" \
+        -X main.buildType=df \
+        -X main.version=${VERSION} \
+        -X main.commit=${COMMIT} \
+        -X main.buildTime=${BUILDTIME}" \
         -o app
 
 FROM gcr.io/distroless/base-debian10
+
+LABEL \
+    org.opencontainers.image.ref.name="matrixik/sort-camera-photos" \
+    org.opencontainers.image.description="No configuration camera photos sorting" \
+    org.opencontainers.image.authors="Dobrosław Żybort <matrixik@gmail.com>" \
+    org.opencontainers.image.documentation="https://github.com/matrixik/sort-camera-photos/blob/master/README.md" \
+    org.opencontainers.image.licenses="BSD-3-Clause" \
+    org.opencontainers.image.source="https://github.com/matrixik/sort-camera-photos" \
+    org.opencontainers.image.url="https://hub.docker.com/r/matrixik/sort-camera-photos/"
+
 WORKDIR /
 COPY --from=builder /go/src/app/app .
 ENTRYPOINT ["/app"]
