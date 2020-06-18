@@ -175,6 +175,7 @@ func proposeRename(files []string) (map[string]string, error) {
 		xmpFilenameSmall := file + ".xmp"
 		if _, err = os.Stat(xmpFilenameSmall); !os.IsNotExist(err) {
 			renames[xmpFilenameSmall] = newFilename + ".xmp"
+			continue
 		}
 		xmpFilenameBig := file + ".XMP"
 		if _, err = os.Stat(xmpFilenameBig); !os.IsNotExist(err) {
