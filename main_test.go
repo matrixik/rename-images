@@ -1,3 +1,6 @@
+// Copyright (c) 2020, Dobrosław Żybort
+// SPDX-License-Identifier: BSD-3-Clause
+
 package main
 
 import (
