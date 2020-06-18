@@ -1,10 +1,10 @@
 # sort-camera-photos
 
-No configuration camera picture sorting.
+No configuration camera photos sorting.
 
-This tool is intended to rename pictures files downloaded straight from camera
-before any processing is done. It's searching for all pictures having filename
-prefix like `DSC`, `_DSC`, `IMG` or similar (so already renamed pictures aren't
+This tool is intended to rename photo files downloaded straight from camera
+before any processing is done. It's searching for all photos having filename
+prefix like `DSC`, `_DSC`, `IMG` or similar (so already renamed photos aren't
 touch). Then extract `EXIF` creation date and time and use it for new name.
 Input folder structure does not matter. All supported files will be moved
 to new place.
@@ -12,7 +12,7 @@ to new place.
 `some_folder/placeA/_DSC7890.arw` => `2020/2020-06-18/20200618-121314_7890.arw`
 
 Sidecar files like `jpg`, `jpeg` or `xmp` also will be sorted (`xmp` will use
-picture creation date and time).
+photo creation date and time).
 
 Output folder structure:
 
@@ -34,7 +34,7 @@ Output folder structure:
         └── 20200308-123447_02.cr2
 ```
 
-This way even if you shoot with multiple cameras all pictures will be sorted
+This way even if you shoot with multiple cameras all photos will be sorted
 properly (if you synchronize time on all cameras).
 
 Next you can change subfolders names to contain more useful info like
@@ -45,7 +45,7 @@ You need to remove old and empty folders by hand (it leave them just in case).
 
 Warning: if destination file with same name already exists it will
 be overwritten. Thanks to using time with seconds in new file names this should
-almost never happen with different pictures.
+almost never happen with different photos.
 
 ## Usage
 

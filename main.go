@@ -1,7 +1,7 @@
 // Copyright (c) 2020, Dobrosław Żybort
 // SPDX-License-Identifier: BSD-3-Clause
 
-// No configuration camera picture sorting.
+// No configuration camera photos sorting.
 package main
 
 import (
