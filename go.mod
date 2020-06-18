@@ -1,4 +1,4 @@
-module github.com/matrixik/rename-images
+module github.com/matrixik/sort-camera-pics
 
 go 1.14
 

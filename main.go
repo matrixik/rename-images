@@ -1,3 +1,4 @@
+// No configuration camera picture sorting.
 package main
 
 import (
