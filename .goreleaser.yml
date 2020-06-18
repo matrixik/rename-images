@@ -14,9 +14,10 @@ builds:
       - amd64
     ldflags:
       - -s -w
-      - -X main.version={{.Version}}
-      - -X main.commit={{.ShortCommit}}
-      - -X main.date={{.Date}}
+      - -X main.buildType=gr
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .ShortCommit }}
+      - -X main.buildTime={{ .Date }}
 
 archives:
   - format: binary

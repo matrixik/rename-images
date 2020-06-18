@@ -16,7 +16,16 @@ RUN go mod verify
 # Run tests so we don't build app with failing tests
 RUN go test ./...
 
-RUN go build -o app
+RUN \
+    VERSION=$(git describe --tags --dirty --always) && \
+    COMMIT=$(git rev-parse --short HEAD) && \
+    BUILDTIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ") && \
+    go build -ldflags="-s -w \
+        -X main.buildType=df:${DOCKER_TAG:-} \
+        -X main.version=$VERSION \
+        -X main.commit=$COMMIT \
+        -X main.buildTime=$BUILDTIME" \
+        -o app
 
 FROM gcr.io/distroless/base-debian10
 WORKDIR /

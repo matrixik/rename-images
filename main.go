@@ -19,11 +19,12 @@ import (
 	"github.com/go-errors/errors"
 )
 
-// goreleaser
+// Build information
 var (
-	version = "unknown"
-	commit  = "unknown"
-	date    = "unknown"
+	buildType = "gb" // go build, df for Dockerfile, gr for goreleaser
+	version   = "unknown"
+	commit    = "unknown"
+	buildTime = "unknown"
 )
 
 var nameStarts = []string{
@@ -47,8 +48,8 @@ var nameStarts = []string{
 var emptyFolders []string
 
 func main() {
-	fmt.Printf("sort-camera-photos, version: %s (%s from: %s\n)",
-		version, commit, date)
+	fmt.Printf("sort-camera-photos, version: %s (%s, git: %s from: %s)\n",
+		version, buildType, commit, buildTime)
 
 	err := processImages("./")
 	if err != nil {
