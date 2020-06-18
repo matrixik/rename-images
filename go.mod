@@ -1,4 +1,4 @@
-module github.com/matrixik/sort-camera-pics
+module github.com/matrixik/sort-camera-photos
 
 go 1.14
 

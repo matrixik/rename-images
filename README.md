@@ -1,4 +1,4 @@
-# sort-camera-pics
+# sort-camera-photos
 
 No configuration camera picture sorting.
 
@@ -50,13 +50,13 @@ almost never happen with different pictures.
 ## Usage
 
 ```bash
-go get -u -v github.com/matrixik/sort-camera-pics
+go get -u -v github.com/matrixik/sort-camera-photos
 ```
 
 Go to folder where you want to rename all image files and run program
 
 ```bash
-sort-camera-pics
+sort-camera-photos
 ```
 
 ## Other info
