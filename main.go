@@ -19,6 +19,13 @@ import (
 	"github.com/go-errors/errors"
 )
 
+// goreleaser
+var (
+	version = "unknown"
+	commit  = "unknown"
+	date    = "unknown"
+)
+
 var nameStarts = []string{
 	// Names could start with `DSC_` but also with `_DSC` (like Sony AdobeRGB),
 	// it's handled in the code.
@@ -40,6 +47,9 @@ var nameStarts = []string{
 var emptyFolders []string
 
 func main() {
+	fmt.Printf("sort-camera-photos, version: %s (%s from: %s\n)",
+		version, commit, date)
+
 	err := processImages("./")
 	if err != nil {
 		fmt.Printf("Error: %v", err)
