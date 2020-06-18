@@ -50,7 +50,7 @@ func Test_imagesInFolder(t *testing.T) {
 				return
 			}
 			if !cmp.Equal(gotFiles, tt.wantFiles) {
-				t.Errorf("imagesInFolder() = %v, want %v", gotFiles, tt.wantFiles)
+				t.Errorf("imagesInFolder() = %v, want %v\ndiff=%v", gotFiles, tt.wantFiles, cmp.Diff(gotFiles, tt.wantFiles))
 			}
 		})
 	}
@@ -105,7 +105,7 @@ func Test_imageCreationDate(t *testing.T) {
 				return
 			}
 			if !cmp.Equal(got, tt.want) {
-				t.Errorf("imageCreationDate() = %v, want %v", got, tt.want)
+				t.Errorf("imageCreationDate() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
@@ -151,7 +151,7 @@ func Test_proposeRename(t *testing.T) {
 				return
 			}
 			if !cmp.Equal(got, tt.want) {
-				t.Errorf("proposeRename() = %v, want %v", got, tt.want)
+				t.Errorf("proposeRename() = %v, want %v\ndiff=%v", got, tt.want, cmp.Diff(got, tt.want))
 			}
 		})
 	}
@@ -250,7 +250,7 @@ func Test_processImages(t *testing.T) {
 			}
 
 			if !cmp.Equal(hash, tt.want) {
-				t.Errorf("proposeRename() = %v, want %v", hash, tt.want)
+				t.Errorf("proposeRename() = %v, want %v\ndiff=%v", hash, tt.want, cmp.Diff(hash, tt.want))
 			}
 		})
 	}
