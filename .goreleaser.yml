@@ -19,17 +19,23 @@ builds:
       - -X main.commit={{ .ShortCommit }}
       - -X main.buildTime={{ .Date }}
 
+release:
+  draft: true
+
 archives:
   - format: binary
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: 32-bit
-      amd64: 64-bit
     format_overrides:
       - goos: windows
         format: zip
+    replacements:
+      amd64: 64bit
+      386: 32bit
+      darwin: macOS
+      linux: Linux
+      windows: Windows
+    files:
+      - README.md
+      - LICENSE
 
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
@@ -41,3 +47,4 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+      - "^[Tt]ypo"
