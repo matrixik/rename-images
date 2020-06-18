@@ -49,9 +49,17 @@ almost never happen with different photos.
 
 ## Usage
 
+Download [last release](https://github.com/matrixik/sort-camera-photos/releases/latest).
+
+or install with Go:
+
 ```bash
 go get -u -v github.com/matrixik/sort-camera-photos
 ```
+
+You can also run last stable version with Docker and use it with alias:
+
+`alias sort-camera-photos='docker run --rm -it --volume "${PWD}":"${PWD}" --workdir "${PWD}" matrixik/sort-camera-photos:latest'`
 
 Go to folder where you want to rename all image files and run program
 
