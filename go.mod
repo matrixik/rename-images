@@ -9,5 +9,5 @@ require (
 	github.com/google/go-cmp v0.5.0
 	github.com/gosimple/hashdir v1.0.1
 	github.com/otiai10/copy v1.2.0
-	github.com/rs/zerolog v1.19.0 // indirect
+	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1
 )
