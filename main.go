@@ -186,6 +186,8 @@ func proposeRename(files []string) (map[string]string, error) {
 		xmpFilenameSmall := file + ".xmp"
 		if _, err = os.Stat(xmpFilenameSmall); !os.IsNotExist(err) {
 			renames[xmpFilenameSmall] = newFilename + ".xmp"
+			// On platforms that report file exists regardles of filename
+			// case we don't want to check for upper extension case (.XMP).
 			continue
 		}
 		xmpFilenameBig := file + ".XMP"
