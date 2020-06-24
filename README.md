@@ -57,9 +57,18 @@ or install with Go:
 go get -u -v github.com/matrixik/sort-camera-photos
 ```
 
-You can also run last stable version with Docker and use it with alias:
+You can also run last stable version with Docker, add to your bashrc/zshrc:
 
-`alias sort-camera-photos='docker run --rm -it --volume "${PWD}":"${PWD}" --workdir "${PWD}" matrixik/sort-camera-photos:latest'`
+```bash
+sort-camera-photos() {
+    docker run -it --rm \
+        --volume "${PWD}":"${PWD}" \
+        --workdir "${PWD}" \
+        --user $(id -u ${USER}):$(id -g ${USER}) \
+        --name sort-camera-photos-local-docker \
+        matrixik/sort-camera-photos "$@"
+}
+```
 
 Go to folder where you want to rename all image files and run program
 
