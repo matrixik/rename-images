@@ -105,8 +105,8 @@ func isSupportedFile(path string) bool {
 		// Canon
 		// ".crw",
 		".cr2",
-		// Adobe
-		".dng",
+		// // Adobe
+		// ".dng",
 		// Jpegs
 		".jpg",
 		".jpeg":
