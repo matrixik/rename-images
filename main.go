@@ -6,10 +6,9 @@ package main
 
 import (
 	"bytes"
-	"fmt"
+	"flag"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -17,6 +16,8 @@ import (
 
 	"github.com/evanoberholster/exiftool"
 	"github.com/go-errors/errors"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // Build information
@@ -48,12 +49,25 @@ var nameStarts = []string{
 var emptyFolders []string
 
 func main() {
-	fmt.Printf("sort-camera-photos, version: %s (%s, git: %s from: %s)\n",
+
+	debug := flag.Bool("debug", false, "Sets log level to debug")
+	flag.Parse()
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if *debug {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+		log.Logger = log.With().Caller().Logger()
+	}
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:        os.Stderr,
+		TimeFormat: "2006-01-02 15:04:05"})
+
+	log.Info().Msgf("sort-camera-photos, version: %s (%s, git: %s from: %s)\n",
 		version, buildType, commit, buildTime)
 
 	err := processImages("./")
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
+		log.Error().Msgf("Error: %v", err)
 	}
 }
 
@@ -72,6 +86,8 @@ func processImages(path string) error {
 }
 
 func imagesInFolder(root string) (files []string, err error) {
+	log.Debug().Msg("imagesInFolder")
+
 	if _, err = os.Stat(root); os.IsNotExist(err) {
 		return nil, err
 	}
@@ -138,6 +154,8 @@ func cleanName(filename string) string {
 }
 
 func imageCreationDate(path string) (time.Time, error) {
+	log.Debug().Msg("imageCreationDate")
+
 	f, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return time.Date(2020, time.June, 01, 0, 0, 0, 0, time.UTC), err
@@ -168,6 +186,8 @@ func imageCreationDate(path string) (time.Time, error) {
 }
 
 func proposeRename(files []string) (map[string]string, error) {
+	log.Debug().Msg("proposeRename")
+
 	renames := make(map[string]string)
 	for _, file := range files {
 
@@ -219,8 +239,8 @@ func isEmpty(dir string) bool {
 		return false
 	}
 	defer func() {
-		if ferr := f.Close(); ferr != nil {
-			err = ferr
+		if closeErr := f.Close(); closeErr != nil {
+			err = closeErr
 		}
 	}()
 
