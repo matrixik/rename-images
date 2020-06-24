@@ -11,6 +11,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -77,12 +79,31 @@ func processImages(path string) error {
 		return err
 	}
 
-	filesMap, err := proposeRename(files)
-	if err != nil {
-		return err
+	sort.Strings(files)
+	var filesCount int
+	// Make width as if every image file have side car
+	nrWidth := len(strconv.Itoa(len(files) * 2))
+
+	for _, imgFile := range files {
+		filesMap, err := proposeRename(imgFile)
+		if err != nil {
+			return err
+		}
+
+		if err = moveFiles(filesMap, filesCount, nrWidth); err != nil {
+			return err
+		}
+		filesCount += len(filesMap)
 	}
 
-	return moveFiles(filesMap)
+	log.Info().Msgf("Moved %d files.", filesCount)
+
+	if len(emptyFolders) > 0 {
+		log.Info().Msgf(
+			"Left %d empty folder(s): %v", len(emptyFolders), emptyFolders)
+	}
+
+	return nil
 }
 
 func imagesInFolder(root string) (files []string, err error) {
@@ -91,6 +112,7 @@ func imagesInFolder(root string) (files []string, err error) {
 	if _, err = os.Stat(root); os.IsNotExist(err) {
 		return nil, err
 	}
+
 	err = filepath.Walk(root,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -185,39 +207,38 @@ func imageCreationDate(path string) (time.Time, error) {
 	return e.DateTime()
 }
 
-func proposeRename(files []string) (map[string]string, error) {
+func proposeRename(photoFile string) (map[string]string, error) {
 	log.Debug().Msg("proposeRename")
 
 	renames := make(map[string]string)
-	for _, file := range files {
 
-		fileDate, err := imageCreationDate(file)
-		if err != nil {
-			return nil, err
-		}
-
-		newFilename := strings.ToLower(
-			filepath.Join(
-				fileDate.Format("2006"),
-				fileDate.Format("2006-01-02"),
-				fileDate.Format("20060102-150405")+
-					"_"+
-					cleanName(filepath.Base(file))))
-		renames[file] = newFilename
-
-		// Copy also sidecar files
-		xmpFilenameSmall := file + ".xmp"
-		if _, err = os.Stat(xmpFilenameSmall); !os.IsNotExist(err) {
-			renames[xmpFilenameSmall] = newFilename + ".xmp"
-			// On platforms that report file exists regardles of filename
-			// case we don't want to check for upper extension case (.XMP).
-			continue
-		}
-		xmpFilenameBig := file + ".XMP"
-		if _, err = os.Stat(xmpFilenameBig); !os.IsNotExist(err) {
-			renames[xmpFilenameBig] = newFilename + ".xmp"
-		}
+	fileDate, err := imageCreationDate(photoFile)
+	if err != nil {
+		return nil, err
 	}
+
+	newFilename := strings.ToLower(
+		filepath.Join(
+			fileDate.Format("2006"),
+			fileDate.Format("2006-01-02"),
+			fileDate.Format("20060102-150405")+
+				"_"+
+				cleanName(filepath.Base(photoFile))))
+	renames[photoFile] = newFilename
+
+	// Copy also sidecar files
+	xmpFilenameSmall := photoFile + ".xmp"
+	if _, err = os.Stat(xmpFilenameSmall); !os.IsNotExist(err) {
+		renames[xmpFilenameSmall] = newFilename + ".xmp"
+		// On platforms that report file exists regardles of filename
+		// case we don't want to check for upper extension case (.XMP).
+		return renames, nil
+	}
+	xmpFilenameBig := photoFile + ".XMP"
+	if _, err = os.Stat(xmpFilenameBig); !os.IsNotExist(err) {
+		renames[xmpFilenameBig] = newFilename + ".xmp"
+	}
+
 	return renames, nil
 }
 
@@ -248,15 +269,22 @@ func isEmpty(dir string) bool {
 	return err == io.EOF
 }
 
-func moveFiles(filesMap map[string]string) error {
+func moveFiles(filesMap map[string]string, startingNr, nrWidth int) error {
+	log.Debug().Msg("moveFiles")
+
+	var i int
 	for src, dest := range filesMap {
+		i++
+
 		destPath := filepath.Dir(dest)
 		err := ensureDir(destPath)
 		if err != nil {
 			return err
 		}
 
-		log.Println("Move file", src, "to", dest)
+		log.Info().Msgf("[%*d] Move file %s to %s",
+			nrWidth, startingNr+i, src, dest)
+
 		err = os.Rename(src, dest)
 		if err != nil {
 			return err
@@ -267,11 +295,6 @@ func moveFiles(filesMap map[string]string) error {
 			emptyFolders = append(emptyFolders, srcPath)
 		}
 	}
-	log.Println("Moved", len(filesMap), "files.")
 
-	if len(emptyFolders) > 0 {
-		log.Println("Left", len(emptyFolders), "empty folder(s):",
-			emptyFolders)
-	}
 	return nil
 }

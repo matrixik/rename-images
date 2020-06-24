@@ -130,7 +130,7 @@ func Test_proposeRename(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		files []string
+		photoFile string
 	}
 	tests := []struct {
 		name    string
@@ -139,30 +139,50 @@ func Test_proposeRename(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"Test image rename",
-			args{files: []string{
-				// fp("assets", "CRW_1446.CRW"),
-				fp("assets", "_DSC3262.ARW"),
-				fp("assets", "_DSC3262.JPG"),
-				fp("assets", "20200606", "DSC_02188.JPEG"),
-				fp("assets", "test1", "DSC_0976.NEF"),
-				fp("assets", "test1", "IMG_9526.CR2"),
-			}},
+			"Test image rename 1",
+			args{photoFile: fp("assets", "_DSC3262.ARW")},
 			map[string]string{
-				// fp("assets", "CRW_1446.CRW"): fp("2018", "20180101_1446.crw"),
-				fp("assets", "_DSC3262.ARW"):               fp("2020", "2020-06-13", "20200613-174629_3262.arw"),
-				fp("assets", "_DSC3262.JPG"):               fp("2020", "2020-06-13", "20200613-174629_3262.jpg"),
+				fp("assets", "_DSC3262.ARW"): fp("2020", "2020-06-13", "20200613-174629_3262.arw"),
+			},
+			false,
+		},
+		{
+			"Test image rename 2",
+			args{photoFile: fp("assets", "_DSC3262.JPG")},
+			map[string]string{
+				fp("assets", "_DSC3262.JPG"): fp("2020", "2020-06-13", "20200613-174629_3262.jpg"),
+			},
+			false,
+		},
+		{
+			"Test image rename 3",
+			args{photoFile: fp("assets", "20200606", "DSC_02188.JPEG")},
+			map[string]string{
 				fp("assets", "20200606", "DSC_02188.JPEG"): fp("2020", "2020-06-06", "20200606-080244_02188.jpg"),
-				fp("assets", "test1", "DSC_0976.NEF"):      fp("2019", "2019-06-29", "20190629-031123_0976.nef"),
-				fp("assets", "test1", "DSC_0976.NEF.xmp"):  fp("2019", "2019-06-29", "20190629-031123_0976.nef.xmp"),
-				fp("assets", "test1", "IMG_9526.CR2"):      fp("2019", "2019-05-29", "20190529-123211_9526.cr2"),
+			},
+			false,
+		},
+		{
+			"Test image rename 4",
+			args{photoFile: fp("assets", "test1", "DSC_0976.NEF")},
+			map[string]string{
+				fp("assets", "test1", "DSC_0976.NEF"):     fp("2019", "2019-06-29", "20190629-031123_0976.nef"),
+				fp("assets", "test1", "DSC_0976.NEF.xmp"): fp("2019", "2019-06-29", "20190629-031123_0976.nef.xmp"),
+			},
+			false,
+		},
+		{
+			"Test image rename 5",
+			args{photoFile: fp("assets", "test1", "IMG_9526.CR2")},
+			map[string]string{
+				fp("assets", "test1", "IMG_9526.CR2"): fp("2019", "2019-05-29", "20190529-123211_9526.cr2"),
 			},
 			false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := proposeRename(tt.args.files)
+			got, err := proposeRename(tt.args.photoFile)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("proposeRename() error = %v, wantErr %v",
 					err, tt.wantErr)
@@ -198,7 +218,9 @@ func Test_moveFiles(t *testing.T) {
 	_ = os.Chdir(dir)
 
 	type args struct {
-		filesMap map[string]string
+		filesMap   map[string]string
+		startingNr int
+		nrWidth    int
 	}
 	tests := []struct {
 		name    string
@@ -214,13 +236,18 @@ func Test_moveFiles(t *testing.T) {
 				fp("test1", "DSC_0976.NEF"):     fp("2019", "2019-06-29", "20190629-031123_0976.nef"),
 				fp("test1", "DSC_0976.NEF.xmp"): fp("2019", "2019-06-29", "20190629-031123_0976.nef.xmp"),
 				fp("test1", "IMG_9526.CR2"):     fp("2019", "2019-05-29", "20190529-123211_9526.cr2"),
-			}},
+			},
+				startingNr: 0,
+				nrWidth:    1,
+			},
 			false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := moveFiles(tt.args.filesMap); (err != nil) != tt.wantErr {
+			err := moveFiles(
+				tt.args.filesMap, tt.args.startingNr, tt.args.nrWidth)
+			if (err != nil) != tt.wantErr {
 				t.Errorf("moveFiles() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
