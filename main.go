@@ -5,10 +5,8 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -188,20 +186,10 @@ func imageCreationDate(path string) (time.Time, error) {
 		}
 	}()
 
-	eh, err := exiftool.SearchExifHeader(f)
+	e, err := exiftool.ScanExif(f)
 	if err != nil {
 		return time.Date(2020, time.June, 01, 0, 0, 0, 0, time.UTC),
 			errors.Errorf("File: %v, error: %v", path, err)
-	}
-	_, err = f.Seek(0, 0)
-	if err != nil {
-		return time.Date(2020, time.June, 01, 0, 0, 0, 0, time.UTC), err
-	}
-
-	buf, _ := ioutil.ReadAll(f)
-	e, err := eh.ParseExif(bytes.NewReader(buf))
-	if err != nil {
-		return time.Date(2020, time.June, 01, 0, 0, 0, 0, time.UTC), err
 	}
 
 	return e.DateTime()
