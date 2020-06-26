@@ -1,6 +1,8 @@
 github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=
 github.com/evanoberholster/exiftool v0.0.0-20200619010740-6bf953ddb14a h1:9fvnhfZeBmi74XgCvDob9RL4zz7RQHN0sw50I3UxR0Y=
 github.com/evanoberholster/exiftool v0.0.0-20200619010740-6bf953ddb14a/go.mod h1:Wi09IM3ktxUvzsE70+acKBoS9PJVc9P1zwb9xD/m580=
+github.com/evanoberholster/exiftool v0.0.0-20200626054632-b40ffd90f1c3 h1:4smFxkgq0xgZX20ncMi9DLrZ4Zh+y1rvkGLU0YZ2kp4=
+github.com/evanoberholster/exiftool v0.0.0-20200626054632-b40ffd90f1c3/go.mod h1:Wi09IM3ktxUvzsE70+acKBoS9PJVc9P1zwb9xD/m580=
 github.com/go-errors/errors v1.1.1 h1:ljK/pL5ltg3qoN+OtN6yCv9HWSfMwxSx90GJCZQxYNg=
 github.com/go-errors/errors v1.1.1/go.mod h1:psDX2osz5VnTOnFWbDeWwS7yejl+uV3FEWEp4lssFEs=
 github.com/golang/geo v0.0.0-20200319012246-673a6f80352d h1:C/hKUcHT483btRbeGkrRjJz+Zbcj8audldIi9tRJDCc=
