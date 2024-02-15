@@ -4,7 +4,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -44,12 +43,14 @@ func Test_imagesInFolder(t *testing.T) {
 				fp("assets", "test1", "DSC_0976.NEF"),
 				fp("assets", "test1", "IMG_9526.CR2"),
 			},
-			false},
+			false,
+		},
 		{
 			"Test not existing folder",
 			args{folder: "testowe"},
 			nil,
-			true},
+			true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -82,19 +83,19 @@ func Test_imageCreationDate(t *testing.T) {
 		{
 			"Test ARW image data creation",
 			args{path: fp("assets", "_DSC3262.ARW")},
-			time.Date(2020, time.June, 13, 17, 46, 29, 0, time.UTC),
+			time.Date(2020, time.June, 13, 17, 46, 29, 0, time.FixedZone("UTC+2", 2*60*60)),
 			false,
 		},
 		{
 			"Test JPG image data creation",
 			args{path: fp("assets", "_DSC3262.JPG")},
-			time.Date(2020, time.June, 13, 17, 46, 29, 0, time.UTC),
+			time.Date(2020, time.June, 13, 17, 46, 29, 0, time.FixedZone("UTC+2", 2*60*60)),
 			false,
 		},
 		{
 			"Test NEF image data creation",
 			args{path: fp("assets", "test1", "DSC_0976.NEF")},
-			time.Date(2019, time.June, 29, 03, 11, 23, 0, time.UTC),
+			time.Date(2019, time.June, 29, 0o3, 11, 23, 14000000, time.FixedZone("UTC-7", -7*60*60)),
 			false,
 		},
 		{
@@ -106,7 +107,7 @@ func Test_imageCreationDate(t *testing.T) {
 		{
 			"Test CRW image data creation",
 			args{path: fp("assets", "CRW_1446.CRW")},
-			time.Date(2020, time.June, 01, 0, 0, 0, 0, time.UTC),
+			time.Date(2020, time.June, 0o1, 0, 0, 0, 0, time.UTC),
 			true,
 		},
 	}
@@ -204,7 +205,7 @@ func Test_moveFiles(t *testing.T) {
 		}
 	}()
 
-	dir, err := ioutil.TempDir("", "assets")
+	dir, err := os.MkdirTemp("", "assets")
 	if err != nil {
 		t.Errorf("Creating temp dir error: %v", err)
 	}
@@ -229,14 +230,15 @@ func Test_moveFiles(t *testing.T) {
 	}{
 		{
 			"Test moving files",
-			args{filesMap: map[string]string{
-				// "CRW_1446.CRW": fp("2018", "20180101_1446.crw"),
-				"_DSC3262.ARW":                  fp("2020", "2020-06-13", "20200613-174629_3262.arw"),
-				"_DSC3262.JPG":                  fp("2020", "2020-06-13", "20200613-174629_3262.jpg"),
-				fp("test1", "DSC_0976.NEF"):     fp("2019", "2019-06-29", "20190629-031123_0976.nef"),
-				fp("test1", "DSC_0976.NEF.xmp"): fp("2019", "2019-06-29", "20190629-031123_0976.nef.xmp"),
-				fp("test1", "IMG_9526.CR2"):     fp("2019", "2019-05-29", "20190529-123211_9526.cr2"),
-			},
+			args{
+				filesMap: map[string]string{
+					"CRW_1446.CRW":                  fp("2018", "20180101_1446.crw"),
+					"_DSC3262.ARW":                  fp("2020", "2020-06-13", "20200613-174629_3262.arw"),
+					"_DSC3262.JPG":                  fp("2020", "2020-06-13", "20200613-174629_3262.jpg"),
+					fp("test1", "DSC_0976.NEF"):     fp("2019", "2019-06-29", "20190629-031123_0976.nef"),
+					fp("test1", "DSC_0976.NEF.xmp"): fp("2019", "2019-06-29", "20190629-031123_0976.nef.xmp"),
+					fp("test1", "IMG_9526.CR2"):     fp("2019", "2019-05-29", "20190529-123211_9526.cr2"),
+				},
 				startingNr: 0,
 				nrWidth:    1,
 			},
@@ -262,7 +264,7 @@ func Test_processImages(t *testing.T) {
 		}
 	}()
 
-	dir, err := ioutil.TempDir("", "assets")
+	dir, err := os.MkdirTemp("", "assets")
 	if err != nil {
 		t.Errorf("Creating temp dir error: %v", err)
 	}

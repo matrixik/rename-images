@@ -1,9 +1,9 @@
 # Copyright (c) 2020, Dobrosław Żybort
 # SPDX-License-Identifier: BSD-3-Clause
 
-FROM golang:1.14 as builder
+FROM golang:1.21 as builder
 
-# Set environmet variables for build process
+# Set environment variables for build process
 ENV \
     CGO_ENABLED=0 \
     GOOS=linux \

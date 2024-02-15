@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/evanoberholster/exiftool"
+	"github.com/evanoberholster/imagemeta"
 	"github.com/go-errors/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -49,7 +49,6 @@ var nameStarts = []string{
 var emptyFolders []string
 
 func main() {
-
 	debug := flag.Bool("debug", false, "Sets log level to debug")
 	flag.Parse()
 
@@ -60,7 +59,8 @@ func main() {
 	}
 	log.Logger = log.Output(zerolog.ConsoleWriter{
 		Out:        os.Stderr,
-		TimeFormat: "2006-01-02 15:04:05"})
+		TimeFormat: "2006-01-02 15:04:05",
+	})
 
 	log.Info().Msgf("sort-camera-photos, version: %s (%s, git: %s from: %s)\n",
 		version, buildType, commit, buildTime)
@@ -152,8 +152,7 @@ func isSupportedFile(path string) bool {
 }
 
 func hasDefaultName(path string) bool {
-	cleanFilename :=
-		strings.TrimPrefix(filepath.Base(strings.ToUpper(path)), "_")
+	cleanFilename := strings.TrimPrefix(filepath.Base(strings.ToUpper(path)), "_")
 	for _, pref := range nameStarts {
 		if strings.HasPrefix(cleanFilename, pref) {
 			return true
@@ -178,7 +177,7 @@ func imageCreationDate(path string) (time.Time, error) {
 
 	f, err := os.Open(filepath.Clean(path))
 	if err != nil {
-		return time.Date(2020, time.June, 01, 0, 0, 0, 0, time.UTC), err
+		return time.Date(2020, time.June, 0o1, 0, 0, 0, 0, time.UTC), err
 	}
 	defer func() {
 		if closeErr := f.Close(); closeErr != nil {
@@ -186,13 +185,13 @@ func imageCreationDate(path string) (time.Time, error) {
 		}
 	}()
 
-	e, err := exiftool.ScanExif(f)
+	e, err := imagemeta.Decode(f)
 	if err != nil {
-		return time.Date(2020, time.June, 01, 0, 0, 0, 0, time.UTC),
+		return time.Date(2020, time.June, 0o1, 0, 0, 0, 0, time.UTC),
 			errors.Errorf("File: %v, error: %v", path, err)
 	}
 
-	return e.DateTime()
+	return e.CreateDate(), nil
 }
 
 func proposeRename(photoFile string) (map[string]string, error) {
