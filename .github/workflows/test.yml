@@ -37,7 +37,7 @@ jobs:
         uses: dominikh/staticcheck-action@v1.3.0
         with:
           install-go: false
-          cache-key: ${{ matrix.go-version }}
+          # cache-key: ${{ matrix.go-version }}
 
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
