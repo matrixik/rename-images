@@ -1,6 +1,6 @@
 module github.com/matrixik/sort-camera-photos
 
-go 1.21
+go 1.22
 
 require (
 	github.com/evanoberholster/imagemeta v0.3.1
