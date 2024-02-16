@@ -41,6 +41,7 @@ jobs:
           # cache-key: ${{ matrix.go-version }}
 
       - name: Run Gosec Security Scanner
+        if: runner.os == 'Linux'
         uses: securego/gosec@master
         with:
           args: ./...
