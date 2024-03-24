@@ -3,13 +3,13 @@
 No configuration camera photos sorting.
 
 This tool is intended to rename photo files downloaded straight from camera
-before any processing is done. It's searching for all photos having filename
-prefix like `DSC`, `_DSC`, `IMG` or similar (so already renamed photos aren't
-touch). Then extract `EXIF` creation date and time and use it for new name.
+before any processing is done. It's searching for all photos not having prefix
+like `YYYYmmdd-HHMMSS_` (like `20190610-042345_`).
+Then extract `EXIF` creation date and time and use it for new name.
 Input folder structure does not matter. All supported files will be moved
 to new place.
 
-`some_folder/placeA/_DSC7890.arw` => `2020/2020-06-18/20200618-121314_7890.arw`
+`some_folder/placeA/_DSC7890.arw` => `2020/2020-06-18/20200618-121314__dsc7890.arw`
 
 Sidecar files like `jpg`, `jpeg` or `xmp` also will be sorted (`xmp` will use
 photo creation date and time).
@@ -39,7 +39,7 @@ properly (if you synchronize time on all cameras).
 
 Next you can change subfolders names to contain more useful info like
 `2020-03-08_Alice_portrait`. This way if you want to copy/move this folder
-somewhere else it will always have unique name. Avoid spaces in names.
+somewhere else it will always have unique name.
 
 You need to remove old and empty folders by hand (it leave them just in case).
 
@@ -80,10 +80,10 @@ sort-camera-photos
 
 Source of folder name structure idea:
 
-https://www.photographyessentials.net/image-file-management-chronological-folder-names/
+<https://www.photographyessentials.net/image-file-management-chronological-folder-names/>
 
 Additional good info:
 
-https://composeclick.com/how-to-name-and-organize-your-photos/
+<https://composeclick.com/how-to-name-and-organize-your-photos/>
 
-https://www.scanyourentirelife.com/what-everybody-ought-know-when-naming-your-scanned-photos-part-1/
+<https://www.scanyourentirelife.com/what-everybody-ought-know-when-naming-your-scanned-photos-part-1/>

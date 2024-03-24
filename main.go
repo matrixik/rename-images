@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -27,24 +28,6 @@ var (
 	commit    = "unknown"
 	buildTime = "unknown"
 )
-
-var nameStarts = []string{
-	// Names could start with `DSC_` but also with `_DSC` (like Sony AdobeRGB),
-	// it's handled in the code.
-	// Source: https://en.wikipedia.org/wiki/MediaWiki:Filename-prefix-blacklist
-	"CIMG", // Casio
-	"DSC",  // Nikon, Sony
-	"DSCF", // Fuji
-	"DSCN", // Nikon
-	"DUW",  // some mobile phones
-	"IMAG", // Many companies
-	"IMG",  // generic
-	"JD",   // Jenoptik
-	"KIF",  // Kyocera
-	"MGP",  // Pentax
-	"S700", // Samsung
-	"PICT", // misc.
-}
 
 var emptyFolders []string
 
@@ -120,7 +103,7 @@ func imagesInFolder(root string) (files []string, err error) {
 			// Select only files that need to have changed name
 			if !info.IsDir() &&
 				isSupportedFile(path) &&
-				hasDefaultName(path) {
+				!isFilenameDateTimePrefixed(path) {
 				files = append(files, path)
 			}
 			return nil
@@ -151,25 +134,20 @@ func isSupportedFile(path string) bool {
 	return false
 }
 
-func hasDefaultName(path string) bool {
-	cleanFilename := strings.TrimPrefix(filepath.Base(strings.ToUpper(path)), "_")
-	for _, pref := range nameStarts {
-		if strings.HasPrefix(cleanFilename, pref) {
-			return true
-		}
+// isFilenameDateTimePrefixed checks if the filename in path starts with a date
+// and time in the format YYYYmmdd-HHMMSS_
+func isFilenameDateTimePrefixed(path string) bool {
+	matched, err := regexp.MatchString(`^\d{8}-\d{6}_`, filepath.Base(strings.ToUpper(path)))
+	if err != nil {
+		log.Error().Msgf("Error matching regex: %v", err)
+		return false
 	}
-	return false
+	return matched
 }
 
 func cleanName(filename string) string {
-	clean := strings.ReplaceAll(
-		strings.TrimPrefix(strings.ToUpper(filename), "_"), "JPEG", "JPG")
-	for _, pref := range nameStarts {
-		if strings.HasPrefix(clean, pref) {
-			return strings.TrimPrefix(strings.TrimPrefix(clean, pref), "_")
-		}
-	}
-	return filename
+	clean := strings.ReplaceAll(strings.ToUpper(filename), "JPEG", "JPG")
+	return clean
 }
 
 func imageCreationDate(path string) (time.Time, error) {
