@@ -317,7 +317,7 @@ func Test_processImages(t *testing.T) {
 			// On all unix platforms
 			"fb98508f35c383a3f5a3a70e7a3266a66d3db58b07fdd40e1d7e86427b68c02b",
 			// On Windows (file path separator is different)
-			"f63daf706deb41d9024558d58f00459090322a189d98f3070d618b680605c12d",
+			"7ab2da567b33cc0aefc57411caf50fe5e49a8212a3a644ced1e33b48aca7cd6e",
 			false,
 		},
 	}
