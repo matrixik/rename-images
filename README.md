@@ -5,7 +5,7 @@ No configuration camera photos sorting.
 This tool is intended to rename photo files downloaded straight from camera
 before any processing is done. It's searching for all photos not having prefix
 like `YYYYmmdd-HHMMSS_` (like `20190610-042345_`).
-Then extract `EXIF` creation date and time and use it for new name.
+Then extract `EXIF` `DateTimeOriginal` and use it for new name.
 Input folder structure does not matter. All supported files will be moved
 to new place.
 
