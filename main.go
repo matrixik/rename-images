@@ -169,7 +169,7 @@ func imageCreationDate(path string) (time.Time, error) {
 			errors.Errorf("File: %v, error: %v", path, err)
 	}
 
-	return e.CreateDate(), nil
+	return e.DateTimeOriginal(), nil
 }
 
 func proposeRename(photoFile string) (map[string]string, error) {
